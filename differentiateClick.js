@@ -41,30 +41,4 @@ function checkButton(x) {
     b.digitalWrite('P8_13', b.LOW);
     prevState = 0;
   }
-
-  
-  /*
-  if (a > 0 && pause1 > 1) {
-    console.log("single press");
-    pause1 = 0;
-    a = 0;
-  } else if (a > 0 && pause1 <= 5 && pause2 > 5) {
-    console.log("double press");
-    pause1 = 0;
-    pause2 = 0;
-    a = 0;
-  } else if (a > 0 && pause1 <= 5 && pause2 <= 5 && pause3 > 5) {
-    console.log("triple press");
-    pause1 = 0;
-    pause2 = 0;
-    pause3 = 0;
-    a = 0;
-  } else if (a >= 20 && pause1 > 5 && pause2 > 5 && pause3 > 5) {
-    console.log("long press");
-    pause1 = 0;
-    pause2 = 0;
-    pause3 = 0;
-    a = 0;
-  }
-  */
 }
