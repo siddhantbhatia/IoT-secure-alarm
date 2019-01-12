@@ -2,6 +2,7 @@ var b = require('bonescript');
 var clickCount = 0;
 var start = 0;
 var clicked = 0;
+var hold = 0;
 b.pinMode('P8_19', b.INPUT);
 b.pinMode('P8_13', b.OUTPUT);
 
@@ -12,6 +13,9 @@ b.digitalRead('P8_19', checkButton);
 }
 
 function send_signal() {
+  if (clickCount == 1 && hold > 10) {
+    console.log("HOLD")
+  }
   console.log(clickCount);
   reset_counts();
 }
@@ -24,6 +28,7 @@ function reset_counts() {
 
 function checkButton(button) {
   if(button.value == 1){
+    hold += 1;
     if (start == 0) {
       setTimeout(send_signal, 2000);
       start += 1;
