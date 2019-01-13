@@ -3,6 +3,7 @@ var clickCount = 0;
 var start = 0;
 var clicked = 0;
 var hold = 0;
+var i = 0;
 b.pinMode('P8_19', b.INPUT);
 b.pinMode('P8_13', b.OUTPUT);
 
@@ -16,7 +17,13 @@ function send_signal() {
   if (clickCount == 1 && hold > 10) {
     console.log("HOLD")
   }
+  else {
   console.log(clickCount);
+    for (i = 0; i < clickCount; i++) {
+      b.digitalWrite('P8_13', b.HIGH);
+       b.digitalWrite('P8_13', b.LOW);
+    }
+  }
   reset_counts();
 }
 
@@ -24,6 +31,7 @@ function reset_counts() {
     start = 0;
   clickCount = 0;
   clicked = 0;
+  hold = 0;
 }
 
 function checkButton(button) {
@@ -34,7 +42,6 @@ function checkButton(button) {
       start += 1;
     }
     if(clicked == 0){
-      b.digitalWrite('P8_13', b.HIGH);
       clickCount += 1;
       clicked = 1;
     }
@@ -44,3 +51,4 @@ function checkButton(button) {
     clicked = 0;
   }
 }
+
