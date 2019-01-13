@@ -32,14 +32,45 @@ function time_end() {
   // if number of clicks is 1 and button is hold for 10 of the checking intervals
   if (clickCounter == 1 && holdState > 10){ 
     console.log("hold"); // output to terminal as a hold
+    b.digitalWrite('P8_13', b.HIGH); // LED on
+    console.log("on");
+    wait_ms(2000); // let LED on for 2 sec
+    b.digitalWrite('P8_13', b.LOW); // LED off
+    console.log("off");
   } else { 
     console.log(clickCounter + " click(s)") // else output to terminal the number of clicks
+    blink(clickCounter); // let LED blink for the number of times the button is clicked in the 5sec
   }
   // reset all variables
   firstclick = false;
   clickCounter = 0;
   prevState = 0;
   holdState = 0;
+}
+
+/*
+ * Function to wait for a number of milliseconds
+ */
+function wait_ms(ms) {
+	var start = Date().getTime(); // get initial time
+	var end = Date().getTime(); // initialise end time
+	while (end < start + ms) { // let this loop run for the number of ms specified
+		end = Date().getTime();
+	}
+}
+
+/*
+ * Function to blink LED for a number of times
+ */
+function blink(x) {
+	var i = 0;
+	while (i < x) {
+		b.digitalWrite('P8_13', b.HIGH); // LED on
+		console.log("on");
+	    wait_ms(55);
+	    b.digitalWrite('P8_13', b.LOW); // LED off
+	    console.log("off");
+	}
 }
 
 /*
@@ -50,7 +81,7 @@ function toggleLED(x) {
   // if status of button is 1 (clicked)
   if (x.value == 1) {
     holdState += 1; // increment of hold state
-    b.digitalWrite('P8_13', b.HIGH); // light up the LED at P8_13
+//    b.digitalWrite('P8_13', b.HIGH); // light up the LED at P8_13
     if (firstclick == false) { // if not yet first click (or current is first click)
       setTimeout(time_end, 5000); // start the timeout of 5sec and call function time_end() after 5sec interval
       firstclick = true; // set first click as done
@@ -60,7 +91,7 @@ function toggleLED(x) {
       prevState = 1; // record the current state as previous state (to identify pauses between clicks)
     }
   } else { // else if status of button is 0 (not clicked)
-    b.digitalWrite('P8_13', b.LOW); // switch off the LED at P8_13
+//    b.digitalWrite('P8_13', b.LOW); // switch off the LED at P8_13
     prevState = 0; // record the current state as previous state (to identify pauses between clicks)
   }
 }
