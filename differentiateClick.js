@@ -34,7 +34,7 @@ function time_end() {
     console.log("hold"); // output to terminal as a hold
     b.digitalWrite('P8_13', b.HIGH); // LED on
     console.log("on");
-    wait_ms(2000); // let LED on for 2 sec
+    wait_ms(1500); // let LED on for 2 sec
     b.digitalWrite('P8_13', b.LOW); // LED off
     console.log("off");
   } else { 
@@ -52,10 +52,10 @@ function time_end() {
  * Function to wait for a number of milliseconds
  */
 function wait_ms(ms) {
-	var start = Date().getTime(); // get initial time
-	var end = Date().getTime(); // initialise end time
+	var start = new Date().getTime(); // get initial time
+	var end = new Date().getTime(); // initialise end time
 	while (end < start + ms) { // let this loop run for the number of ms specified
-		end = Date().getTime();
+		end = new Date().getTime(); // getting new current time
 	}
 }
 
@@ -65,11 +65,13 @@ function wait_ms(ms) {
 function blink(x) {
 	var i = 0;
 	while (i < x) {
-		b.digitalWrite('P8_13', b.HIGH); // LED on
+	 	b.digitalWrite('P8_13', b.HIGH); // LED on
 		console.log("on");
-	    wait_ms(55);
-	    b.digitalWrite('P8_13', b.LOW); // LED off
-	    console.log("off");
+	  wait_ms(200); // let LED be on for 200ms
+	  b.digitalWrite('P8_13', b.LOW); // LED off
+	  console.log("off");
+	  wait_ms(200); // let LED be off for 200ms
+	  i += 1; // increment of iteration
 	}
 }
 
