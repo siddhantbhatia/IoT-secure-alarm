@@ -11,3 +11,9 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.database()
+
+db.ref("/me").set("han")
+
+db.ref("/han").on('value', function(snapshot){
+    console.log(snapshot.val())
+})
