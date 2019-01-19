@@ -12,8 +12,30 @@ firebase.initializeApp(config);
 
 var db = firebase.database()
 
-db.ref("/me").set("han")
+db.ref("/test").set("not_clicked")
+
+var b = require('bonescript');
+b.pinMode('P8_19', b.INPUT);
+b.pinMode('P8_13', b.OUTPUT);
+setInterval(check,100);
+
+function check(){
+b.digitalRead('P8_19', checkButton);
+}
+var clicks=0;
+function checkButton(x) {
+  if(x.value == 1){
+    b.digitalWrite('P8_13', b.HIGH);
+    clicks+=1
+    db.ref("/test").set(clicks)
+  }
+  else{
+    b.digitalWrite('P8_13', b.LOW);
+  }
+}
+
 
 db.ref("/han").on('value', function(snapshot){
     console.log(snapshot.val())
 })
+
