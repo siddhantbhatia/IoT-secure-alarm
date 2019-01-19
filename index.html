@@ -10,7 +10,30 @@
   <h1><b>FIT3140 Emergency Response Team</b></h1>
   </header>
   <body>
-  	<script src="main.js"></script>
+	 
+	<script src="main.js"></script>
+	<h1 id="clicked"></h1> 
+	<script src="https://www.gstatic.com/firebasejs/5.8.0/firebase.js"></script>
+	<script>
+	// Initialize Firebase
+	var config = {
+		apiKey: "AIzaSyAPNPaWP4aY0wicKhbp-KOLK3H33G3X6Yk",
+		authDomain: "fit3140-766ce.firebaseapp.com",
+		databaseURL: "https://fit3140-766ce.firebaseio.com",
+		storageBucket: "fit3140-766ce.appspot.com",
+	};
+	firebase.initializeApp(config);
+	var clicked=document.getElementById('clicked');
+	var db = firebase.database().ref().child('test');
+	var db2=firebase.database().ref().child('han');
+	db.on('value', snap=>clicked.innerText=snap.val());
+
+	function activateAlarm(){
+		db2.set("alarm");
+	}
+	
+	</script>
+
   	<section>
   		<section class="smallsection leftsection">
   			<h1>1</h1>
@@ -25,7 +48,14 @@
   		</section>
   		<section class="smallsection rightsection">
   			<h1>4</h1>
-  		</section>
+		  </section>
+		<section class="smallsection rightsection">
+			<h1>
+				<script type="text/javascript">
+					document.write(clicks)
+					</script>
+			</h1>
+		</section>
   	</section>
 	<button id="activateButton" onclick="activateAlarm()" class="button button1">Activate Alarm</button>
   	<p class="panictext" id="alarm"><b></b></p>

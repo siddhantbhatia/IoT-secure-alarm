@@ -11,13 +11,14 @@ var config = {
 firebase.initializeApp(config);
 
 var db = firebase.database()
-
-db.ref("/test").set("not_clicked")
-
+var db2=firebase.database().ref().child('han');
+db.ref("/test").set("not_clicked");
 var b = require('bonescript');
 b.pinMode('P8_19', b.INPUT);
 b.pinMode('P8_13', b.OUTPUT);
 setInterval(check,100);
+
+db2.set("no_alarm");
 
 function check(){
 b.digitalRead('P8_19', checkButton);
@@ -35,7 +36,9 @@ function checkButton(x) {
 }
 
 
+
 db.ref("/han").on('value', function(snapshot){
     console.log(snapshot.val())
 })
+
 
