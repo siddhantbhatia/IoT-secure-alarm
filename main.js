@@ -15,6 +15,7 @@ function check() {
 function checkButton(x) {
   if (x.value == 1) {
     b.digitalWrite("P8_13", b.HIGH);
+    io.emit("gt-button-click", "hey");
   } else {
     b.digitalWrite("P8_13", b.LOW);
   }
@@ -48,7 +49,8 @@ io.on("connection", function(socket) {
   socket.on("disconnect", function() {
     console.log("user disconnected");
   });
-  socket.on("rs-button-click", function() {
+  socket.on("rt-button-click", function() {
+    // rs -- response team
     b.digitalWrite("P8_13", b.HIGH);
     console.log("clicked");
   });
