@@ -4,6 +4,7 @@
 var b = require("bonescript");
 b.pinMode("P8_19", b.INPUT);
 b.pinMode("P8_13", b.OUTPUT);
+var a = 0;
 
 // physical button click listener
 var timer = setInterval(check, 50);
@@ -14,8 +15,9 @@ function check() {
 
 function checkButton(x) {
   if (x.value == 1) {
+    a += 1;
     b.digitalWrite("P8_13", b.HIGH);
-    io.emit("gt-button-click", "hey");
+    io.emit("gt-button-click", "" + a);
   } else {
     b.digitalWrite("P8_13", b.LOW);
   }

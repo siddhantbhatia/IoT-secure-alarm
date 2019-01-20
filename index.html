@@ -40,8 +40,8 @@
     <script>
       var socket = io();
       var emergencyTextBox = document.getElementById("emergency-msg-text");
-      socket.on("gt-button-click", function() {
-        emergencyTextBox.innerHTML = "hi";
+      socket.on("gt-button-click", function(msg) {
+        emergencyTextBox.innerHTML = msg;
       });
     </script>
   </body>
