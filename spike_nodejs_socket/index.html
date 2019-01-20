@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <head>
+    <title>FIT3140 PANIC</title>
+  </head>
+  <header>
+    <h1><b>FIT3140 Emergency Response Team</b></h1>
+  </header>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    var socket = io();
+    function activateAlarm() {
+      socket.emit("rt-button-click");
+    }
+  </script>
+  <!-- <script src="main.js"></script> -->
+  <body>
+    <section>
+      <section class="smallsection leftsection"><h1>1</h1></section>
+      <section class="smallsection rightsection"><h1>2</h1></section>
+    </section>
+    <section>
+      <section class="smallsection leftsection"><h1>3</h1></section>
+      <section class="smallsection rightsection"><h1>4</h1></section>
+    </section>
+    <button
+      id="activateButton"
+      onclick="activateAlarm()"
+      class="button button1"
+    >
+      Activate Alarm
+    </button>
+    <div id="emergency-msg-text"></div>
+    <p class="panictext" id="emergency-msg-text2"><b></b></p>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      var emergencyTextBox = document.getElementById("emergency-msg-text");
+      socket.on("gt-button-click", function(msg) {
+        emergencyTextBox.innerHTML = msg;
+      });
+    </script>
+  </body>
+</html>
