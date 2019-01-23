@@ -1,4 +1,5 @@
-var server = require("./server");
+var server = require("./Server");
+var app = require("./App/App");
 
 myServer = new server();
 myServer.createServer();
