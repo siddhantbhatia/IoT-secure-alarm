@@ -20,7 +20,7 @@ module.exports = class Server {
 
   listen() {
     if (this.app != null) {
-      this.app.listen(8888); // webpage port 8888 --> http://beaglebone.local:8888/
+      this.app.listen(8888, "0.0.0.0"); // webpage port 8888 --> http://beaglebone.local:8888/
     } else {
       console.log("");
     }
