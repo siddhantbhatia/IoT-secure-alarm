@@ -42,12 +42,13 @@ module.exports = class App {
     this.initializeInputListener();
   }
 
+  /**
+   * @description sets the interval to poll for  hardware input
+   */
   initializeInputListener() {
     var self = this;
 
-    // set the interval to poll for  hardware input
     this.timer = setInterval(function() {
-      //callback method
       b.digitalRead("P8_19", function(x) {
         self.readPin(self, x);
       });
@@ -56,6 +57,8 @@ module.exports = class App {
 
   /**
    * @description Reads the Beaglebone hardware pin for input
+   * @param {reference to the calling class} self
+   * @param {input value from the hardware pin} x
    */
   readPin(self, x) {
     if (x.value == 1) {
@@ -69,7 +72,7 @@ module.exports = class App {
       }
 
       /**
-       * Implemented previous state logic To align the human beaviour/speed and hardware response.
+       * Implemented previous state logic To align the human behaviour/speed and hardware response.
        * this avoids loss of event register and false positives.
        */
       if (self.prevButtonState != 1) {
@@ -83,7 +86,8 @@ module.exports = class App {
   }
 
   /**
-   * @description Output the type of click in terminal (To be run every 5sec)
+   * @description Checks the number of click within the interval and resets all values
+   * @param {reference to the calling class} self
    */
   intervalComplete(self) {
     console.log("entered callback");
@@ -97,23 +101,9 @@ module.exports = class App {
       console.log("invalid click: " + self.clickCounter);
     }
 
-    // reset all variables
     self.clickCounter = 0;
     self.firstClick = false;
     self.prevButtonState = 0;
     self.holdState = 0;
-
-    // // if number of clicks is 1 and button is hold for 10 of the checking intervals
-    // if (clickCounter == 1 && holdState > 10) {
-    //   console.log("hold"); // output to terminal as a hold
-    //   b.digitalWrite("P8_13", b.HIGH); // LED on
-    //   console.log("on");
-    //   wait_ms(1500); // let LED on for 2 sec
-    //   b.digitalWrite("P8_13", b.LOW); // LED off
-    //   console.log("off");
-    // } else {
-    //   console.log(clickCounter + " click(s)"); // else output to terminal the number of clicks
-    //   blink(clickCounter); // let LED blink for the number of times the button is clicked in the 5sec
-    // }
   }
 };
