@@ -21,4 +21,8 @@ module.exports = class CommandManager {
   deleteCommand(numberOfClicks) {
     this.commandHashMap.delete(numberOfClicks);
   }
+
+  checkCommand(numberOfClicks) {
+    return this.commandHashMap.get(numberOfClicks);
+  }
 };
