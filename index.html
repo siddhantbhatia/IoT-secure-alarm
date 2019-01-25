@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+  <title>FIT3140 PANIC</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<script src="main.js">
+  document.getElementById("robbery").innerHTML = "<span style='color: red'>ROBBERY</span>";
+  document.getElementById("medical").innerHTML = "<span style='color: red'>MEDICAL EMERGENCY</span>";
+  document.getElementById("fire").innerHTML = "<span style='color: red'>FIRE</span>";
+  document.getElementById("false").innerHTML = "<span style='color: green'>False alarm</span>";
+</script>
+
+<div class="header">
+
+  <h1>Emergency Response System</h1>
+
+</div>
+
+<table>
+
+  <tr class="table_heading">
+    <th>Emergency Type</th>
+  </tr>
+  
+  <tr class="table_text" id="robbery">
+    <td>Robbery</td>
+  </tr>
+  
+  <tr class="table_text" id="medical">
+    <td>Medical Emergency</td>
+  </tr>
+  
+  <tr class="table_text" id="fire">
+    <td>Fire</td>
+  </tr>
+  
+  <tr class="table_text" id="false">
+    <td>False Alarm</td>
+  </tr>
+  
+  <tr>
+    <th>Emergency Type</th>
+  </tr>
+ 
+</table>
+
+<div class="flex">
+
+  <button id="alarm" onclick="activateAlarm()" class="button button1" >Sound Alarms</button>
+  <button id="lock" onclick="lockRegisters()" class="button button2">Lock Registers</button> 
+  <button id="decline" onclick="decline()" class="button button3">Decline</button>
+      
+</div>
+
+  
+</body>
+</html>
