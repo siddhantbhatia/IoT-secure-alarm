@@ -1,9 +1,8 @@
 var b = require("bonescript");
+var CommandManager = require("./Command/CommandManager");
+
 b.pinMode("P8_19", b.INPUT); // set P8_19 (connected to button) as input
 b.pinMode("P8_13", b.OUTPUT); // set P8_13 (connected to LED) as output
-var CommandManager = require("./Command/CommandManager");
-var Click = require("./Command/Click");
-var Command = require("./Command/Command");
 
 // -- to ensure that a single instance of command manager is created
 var CommandManagerSingleton = (function() {
@@ -27,7 +26,8 @@ var CommandManagerSingleton = (function() {
 // -- Class
 
 module.exports = class App {
-  constructor() {
+  constructor(io) {
+    this.io = io;
     this.counter = 0;
 
     console.log("entered app");
@@ -39,13 +39,14 @@ module.exports = class App {
     this.prevButtonState = 0; // immediate previous state read from button
     this.holdState = 0; // number of intervals the button is hold
 
-    this.initializeInputListener();
+    this.initHardwareInputListener();
+    this.initClientMessageListener();
   }
 
   /**
    * @description sets the interval to poll for  hardware input
    */
-  initializeInputListener() {
+  initHardwareInputListener() {
     var self = this;
 
     this.timer = setInterval(function() {
@@ -53,6 +54,20 @@ module.exports = class App {
         self.readPin(self, x);
       });
     }, 50);
+  }
+
+  initClientMessageListener() {
+    this.io.on("connection", function(socket) {
+      console.log("a user connected");
+      socket.on("disconnect", function() {
+        console.log("user disconnected");
+      });
+      socket.on("rt-button-click", function() {
+        // rs -- response team
+        b.digitalWrite("P8_13", b.HIGH);
+        console.log("clicked");
+      });
+    });
   }
 
   /**
@@ -97,6 +112,7 @@ module.exports = class App {
 
     if (self.CommandManager.checkCommand(self.clickCounter)) {
       console.log("clicked: " + self.clickCounter);
+      self.io.emit("gt-button-click", "" + self.clickCounter);
     } else {
       console.log("invalid click: " + self.clickCounter);
     }
