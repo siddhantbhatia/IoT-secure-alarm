@@ -23,10 +23,10 @@ var CommandManagerSingleton = (function() {
   };
 })();
 
-var blinkTypesEnum = { single: 1, double: 2, rapid: 3 };
-Object.freeze(blinkTypesEnum);
+var blinkTypes = { single: 1, double: 2, rapid: 3 };
+Object.freeze(blinkTypes);
 
-var ledEnum = { signal: "P8_13", acknowledgment: "USR1" };
+var ledEnum = { signal: "P8_13", acknowledgment: "USR1", state: "USR3" };
 Object.freeze(ledEnum);
 
 // -- Class
@@ -53,6 +53,8 @@ module.exports = class App {
     b.digitalWrite("USR1", 0);
     b.digitalWrite("USR2", 0);
     b.digitalWrite("USR3", 0);
+
+    this.occupiedState = false;
   }
 
   /**
@@ -83,19 +85,22 @@ module.exports = class App {
       // rs -- response team
       socket.on("rt-sound-alarm", function() {
         console.log("alarm");
-        self.blinkLed(self, ledEnum.signal, blinkTypesEnum.rapid);
-        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.single);
+        var blinkTimer = self.blinkLed(self, ledEnum.signal, blinkTypes.rapid);
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
+        self.resetState(self, blinkTimer);
       });
 
       socket.on("rt-lock-register", function() {
         console.log("lock register");
-        self.blinkLed(self, ledEnum.signal, blinkTypesEnum.single);
-        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.single);
+        self.blinkLed(self, ledEnum.signal, blinkTypes.single);
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
+        self.resetState(self, false);
       });
 
       socket.on("rt-decline", function() {
         console.log("decline");
-        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.double);
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.double);
+        self.resetState(self, false);
       });
     });
   }
@@ -117,23 +122,27 @@ module.exports = class App {
    */
   readPin(self, x) {
     if (x.value == 1) {
-      this.holdState += 1;
+      if (self.occupiedState == false) {
+        this.holdState += 1;
 
-      if (self.firstClick == false) {
-        setTimeout(function() {
-          self.intervalComplete(self);
-        }, 2000); // Initiate the 5 second timer to detect the signal
-        self.firstClick = true;
-      }
+        if (self.firstClick == false) {
+          setTimeout(function() {
+            self.intervalComplete(self);
+          }, 2000); // Initiate the 5 second timer to detect the signal
+          self.firstClick = true;
+        }
 
-      /**
-       * Implemented previous state logic To align the human behaviour/speed and hardware response.
-       * this avoids loss of event register and false positives.
-       */
-      if (self.prevButtonState != 1) {
-        self.clickCounter += 1;
-        self.prevButtonState = 1;
-        console.log("clicked");
+        /**
+         * Implemented previous state logic To align the human behaviour/speed and hardware response.
+         * this avoids loss of event register and false positives.
+         */
+        if (self.prevButtonState != 1) {
+          self.clickCounter += 1;
+          self.prevButtonState = 1;
+          console.log("clicked");
+        }
+      } else {
+        self.blinkLed(self, ledEnum.state, blinkTypes.double);
       }
     } else {
       self.prevButtonState = 0;
@@ -157,6 +166,7 @@ module.exports = class App {
     if (self.CommandManager.checkCommand(self.clickCounter)) {
       console.log("clicked: " + self.clickCounter);
       self.io.emit("gt-button-click", "" + self.clickCounter);
+      self.occupiedState = true;
     } else {
       console.log("invalid click: " + self.clickCounter);
     }
@@ -167,12 +177,18 @@ module.exports = class App {
     self.holdState = 0;
   }
 
+  /**
+   * @description Turns on the ledNumber with blinkType
+   * @param {reference to this class instance} self
+   * @param {refers to the physical led on the BBB board} ledNumber
+   * @param {type of blink} blinkType
+   */
   blinkLed(self, ledNumber, blinkType) {
     switch (blinkType) {
-      case blinkTypesEnum.single:
+      case blinkTypes.single:
         b.digitalWrite(ledNumber, 1);
         break;
-      case blinkTypesEnum.double:
+      case blinkTypes.double:
         for (var i = 0; i < 2; i++) {
           b.digitalWrite(ledNumber, 1);
           self.intervalTimer(200);
@@ -180,7 +196,7 @@ module.exports = class App {
           self.intervalTimer(200);
         }
         break;
-      case blinkTypesEnum.rapid:
+      case blinkTypes.rapid:
         var blinkTimer = setInterval(function() {
           b.digitalWrite(ledNumber, 1);
           self.intervalTimer(50);
@@ -188,14 +204,26 @@ module.exports = class App {
           self.intervalTimer(50);
         }, 110);
 
-        break;
+        return blinkTimer;
       default:
         break;
     }
   }
 
+  resetState(self, blinkTimer) {
+    setTimeout(function() {
+      if (blinkTimer) {
+        clearInterval(blinkTimer);
+      }
+
+      b.digitalWrite(ledEnum.acknowledgment, 0);
+      b.digitalWrite(ledEnum.signal, 0);
+      self.occupiedState = false;
+    }, 5000);
+  }
+
   /**
-   * @description asynchronously tracks time to perform action after an interval
+   * @description tracks time to perform action after an interval in the same thread
    * @param {second interval} ms
    */
   intervalTimer(ms) {
