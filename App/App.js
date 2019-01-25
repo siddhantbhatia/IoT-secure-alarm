@@ -41,6 +41,7 @@ module.exports = class App {
 
     this.initHardwareInputListener();
     this.initClientMessageListener();
+    this.initInputCommands();
   }
 
   /**
@@ -56,6 +57,9 @@ module.exports = class App {
     }, 50);
   }
 
+  /**
+   * @description Establishes socket-io listener to listen for client events
+   */
   initClientMessageListener() {
     this.io.on("connection", function(socket) {
       console.log("a user connected");
@@ -68,6 +72,16 @@ module.exports = class App {
         console.log("clicked");
       });
     });
+  }
+
+  /**
+   * @description Initiliazes the types of command for command manager
+   */
+  initInputCommands() {
+    this.CommandManager.addCommand(1);
+    this.CommandManager.addCommand(2);
+    this.CommandManager.addCommand(3);
+    this.CommandManager.addCommand(10);
   }
 
   /**
@@ -108,6 +122,10 @@ module.exports = class App {
     console.log("entered callback");
     if (self.clickCounter == 1 && self.holdState > 10) {
       self.clickCounter = 10;
+    }
+
+    if (self.clickCounter == 10 && !(self.holdState >= 10)) {
+      self.clickCounter = 99999999;
     }
 
     if (self.CommandManager.checkCommand(self.clickCounter)) {
