@@ -23,6 +23,12 @@ var CommandManagerSingleton = (function() {
   };
 })();
 
+var blinkTypesEnum = { single: 1, double: 2, rapid: 3 };
+Object.freeze(blinkTypesEnum);
+
+var ledEnum = { signal: "P8_13", acknowledgment: "USR1" };
+Object.freeze(ledEnum);
+
 // -- Class
 
 module.exports = class App {
@@ -42,6 +48,11 @@ module.exports = class App {
     this.initHardwareInputListener();
     this.initClientMessageListener();
     this.initInputCommands();
+
+    b.digitalWrite("USR0", 0);
+    b.digitalWrite("USR1", 0);
+    b.digitalWrite("USR2", 0);
+    b.digitalWrite("USR3", 0);
   }
 
   /**
@@ -61,15 +72,30 @@ module.exports = class App {
    * @description Establishes socket-io listener to listen for client events
    */
   initClientMessageListener() {
+    var self = this;
+
     this.io.on("connection", function(socket) {
       console.log("a user connected");
       socket.on("disconnect", function() {
         console.log("user disconnected");
       });
-      socket.on("rt-button-click", function() {
-        // rs -- response team
-        b.digitalWrite("P8_13", b.HIGH);
-        console.log("clicked");
+
+      // rs -- response team
+      socket.on("rt-sound-alarm", function() {
+        console.log("alarm");
+        self.blinkLed(self, ledEnum.signal, blinkTypesEnum.rapid);
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.single);
+      });
+
+      socket.on("rt-lock-register", function() {
+        console.log("lock register");
+        self.blinkLed(self, ledEnum.signal, blinkTypesEnum.single);
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.single);
+      });
+
+      socket.on("rt-decline", function() {
+        console.log("decline");
+        self.blinkLed(self, ledEnum.acknowledgment, blinkTypesEnum.double);
       });
     });
   }
@@ -139,5 +165,45 @@ module.exports = class App {
     self.firstClick = false;
     self.prevButtonState = 0;
     self.holdState = 0;
+  }
+
+  blinkLed(self, ledNumber, blinkType) {
+    switch (blinkType) {
+      case blinkTypesEnum.single:
+        b.digitalWrite(ledNumber, 1);
+        break;
+      case blinkTypesEnum.double:
+        for (var i = 0; i < 2; i++) {
+          b.digitalWrite(ledNumber, 1);
+          self.intervalTimer(200);
+          b.digitalWrite(ledNumber, 0);
+          self.intervalTimer(200);
+        }
+        break;
+      case blinkTypesEnum.rapid:
+        var blinkTimer = setInterval(function() {
+          b.digitalWrite(ledNumber, 1);
+          self.intervalTimer(50);
+          b.digitalWrite(ledNumber, 0);
+          self.intervalTimer(50);
+        }, 110);
+
+        break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * @description asynchronously tracks time to perform action after an interval
+   * @param {second interval} ms
+   */
+  intervalTimer(ms) {
+    var start = new Date().getTime(); // get initial time
+    var end = new Date().getTime(); // initialise end time
+    while (end < start + ms) {
+      // let this loop run for the number of ms specified
+      end = new Date().getTime(); // getting new current time
+    }
   }
 };
