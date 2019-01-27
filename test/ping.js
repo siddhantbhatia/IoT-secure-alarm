@@ -9,6 +9,6 @@ var io = socket.listen(serverInstance);
 
 var count = 0, start_time;
 
-io.on('connection', function(socket) {
-    console.log('connected')
+io.on("connection", function(socket) {
+    console.log("connected")
 })
