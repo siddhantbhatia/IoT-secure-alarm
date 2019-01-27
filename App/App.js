@@ -87,20 +87,20 @@ module.exports = class App {
         console.log("alarm");
         var blinkTimer = self.blinkLed(self, ledEnum.signal, blinkTypes.rapid);
         self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
-        self.resetState(self, blinkTimer);
+        self.resetState(self, blinkTimer, 5000);
       });
 
       socket.on("rt-lock-register", function() {
         console.log("lock register");
         self.blinkLed(self, ledEnum.signal, blinkTypes.single);
         self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
-        self.resetState(self, false);
+        self.resetState(self, false, 5000);
       });
 
       socket.on("rt-decline", function() {
         console.log("decline");
         self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.double);
-        self.resetState(self, false);
+        self.resetState(self, false, 500);
       });
     });
   }
@@ -128,7 +128,7 @@ module.exports = class App {
         if (self.firstClick == false) {
           setTimeout(function() {
             self.intervalComplete(self);
-          }, 2000); // Initiate the 5 second timer to detect the signal
+          }, 5000); // Initiate the 5 second timer to detect the signal
           self.firstClick = true;
         }
 
@@ -169,6 +169,7 @@ module.exports = class App {
       self.occupiedState = true;
     } else {
       console.log("invalid click: " + self.clickCounter);
+      self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.double);
     }
 
     self.clickCounter = 0;
@@ -210,7 +211,7 @@ module.exports = class App {
     }
   }
 
-  resetState(self, blinkTimer) {
+  resetState(self, blinkTimer, timeout) {
     setTimeout(function() {
       if (blinkTimer) {
         clearInterval(blinkTimer);
@@ -219,7 +220,7 @@ module.exports = class App {
       b.digitalWrite(ledEnum.acknowledgment, 0);
       b.digitalWrite(ledEnum.signal, 0);
       self.occupiedState = false;
-    }, 5000);
+    }, timeout);
   }
 
   /**
