@@ -10,5 +10,21 @@ var io = socket.listen(serverInstance);
 var count = 0, start_time;
 
 io.on("connection", function(socket) {
-    console.log("connected")
+    socket.on("pong_app", function(){
+        if (count == 50) {
+            end_time = new Date()
+            count = 0
+            time_taken = end_time - start_time
+            avg_time = time_taken / 100
+            console.log(avg_time)
+            
+        } else {
+            socket.emit("ping_client");
+            count++
+        }
+    })
+    
+    start_time = new Date()
+    socket.emit("ping_client");
+    count++;
 })

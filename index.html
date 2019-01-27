@@ -187,8 +187,8 @@
         }
       });
       // test purposes
-      socket.on('ping_client', function(){
-        console.log('ping_client')
+      socket.on("ping_client", function(){
+        socket.emit("pong_app");
       })
     </script>
   </body>
