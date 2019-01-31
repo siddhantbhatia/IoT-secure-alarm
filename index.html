@@ -5,6 +5,7 @@
   <head>
     <title>FIT3140 PANIC</title>
 
+
     <style>
       body {
         background-color: black;
@@ -24,18 +25,17 @@
         text-align: center;
       }
 
-      th,
-      td {
+      th, td {
         padding: 12px;
       }
 
-      .table_text {
+      .table_text{
         color: #e0e0eb;
         font-family: "Trebuchet MS";
         font-size: 120%;
       }
 
-      .table_heading {
+      .table_heading{
         color: #c2c2d6;
         font-family: "Trebuchet MS";
         font-size: 170%;
@@ -49,7 +49,7 @@
         font-size: 16px;
         margin: 4px 2px;
         transition-duration: 0.4s;
-        cursor: pointer;
+        cursor: pointer;  
         box-shadow: 0 4px #999;
         outline: none;
       }
@@ -59,46 +59,97 @@
       }
 
       .button1 {
-        background-color: #d1d1e0;
+        background-color: #d1d1e0; 
       }
 
       .button1:hover {
         background-color: white;
         color: #29293d;
       }
-
-      .button2 {
-        background-color: #d1d1e0;
+      
+      .timeButton {
+        border-radius: 0px;
+        background-color: black;
+        border: white;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        outline: none;
+        transition-duration: 0.4s;
       }
 
-      .button2:hover {
-        background-color: white;
-        color: #29293d;
-      }
-
-      .button3 {
-        background-color: #d1d1e0; 
-      }
-
-      .button3:hover {
-        background-color: white;
-        color: #29293d;
-      }
-
-      .button4 {
-        background-color: #d1d1e0; 
-      }
-
-      .button4:hover {
-        background-color: white;
-        color: #29293d;
+      .timeButton:hover {
+          background-color: #d1d1e0;
+          color: black;
       }
 
       .flex {
         display: flex;
         justify-content: center;
       }
+      
+      .modal {
+        display: none; 
+        position: fixed; 
+        padding-top: 100px; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0,0,0,0.6); 
+      }
+      
+      .modal-header {
+        color: #e0e0eb;
+        background-color: black;
+        padding: 20px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+      
+      .modal-body {
+        color: #e0e0eb;
+        background-color: black;
+        padding-bottom: 25px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+      
+      .modal-content {
+        position: relative;
+        background-color:black;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 60%;
+        animation-name: animatetop;
+        animation-duration: 0.3s;
+      }
+      
+      @keyframes animatetop {
+        from {top: -300px; opacity: 10}
+        to {top: 0; opacity: 1}
+      }
+            
+      .close {
+        color: #d1d1e0;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+      
+      .close:hover,
+      .close:focus {
+        color: white;
+        cursor: pointer;
+      }
+
     </style>
+
+    
   </head>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -117,10 +168,11 @@
       reset();
     }
     function reset() {
-      document.getElementById("robbery").style.color = "white";
-      document.getElementById("fire").style.color = "white";
-      document.getElementById("medical").style.color = "white";
-      document.getElementById("false").style.color = "white";
+      document.getElementById("emergency-table").style.color = "black";
+      document.getElementById("robbery").style.color = "black";
+      document.getElementById("fire").style.color = "black";
+      document.getElementById("medical").style.color = "black";
+      document.getElementById("false").style.color = "black";
     }
   </script>
 
@@ -154,19 +206,75 @@
     </table>
 
     <div class="flex">
-      <button id="alarm" onclick="activateAlarm()" class="button button1">
+      <button id="alarm" class="button button1">
         Sound Alarms
       </button>
-      <button id="alarm2" onclick="stopAlarm()" class="button button4">
+      <button id="alarm2" onclick="stopAlarm()" class="button button1">
         Stop Alarms
       </button>
-      <button id="lock" onclick="lockRegisters()" class="button button2">
+      <button id="lock" onclick="lockRegisters()" class="button button1">
         Lock Registers
       </button>
-      <button id="decline" onclick="decline()" class="button button3">
+      <button id="decline" onclick="decline()" class="button button1">
         Decline
       </button>
     </div>
+    
+    <div id="myModal" class="modal">
+
+      <div class="modal-content">
+          <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>How many seconds should the alarm sound?</h2>
+          </div>
+          <div class="modal-body">
+          	<div class ="flex">
+            <button id="5" onclick="" class="timeButton">
+              5
+            </button>
+            <button id="10" onclick="" class="timeButton">
+              10
+            </button>
+            <button id="30" onclick="" class="timeButton">
+              30
+            </button>
+            <button id="60" onclick="" class="timeButton">
+              60
+            </button><button id="120" onclick="" class="timeButton">
+              120
+            </button>
+            </div>
+          </div>
+        
+      
+      </div>
+
+    </div>
+    
+    <script>
+
+      var modal = document.getElementById('myModal');
+
+      var alarmButton = document.getElementById("alarm");
+
+      var span = document.getElementsByClassName("close")[0];
+
+
+      alarmButton.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+      </script>
+      
     <script>
       var socket = io();
       var emergencyTextBox = document.getElementById("emergency-msg-text");
@@ -193,10 +301,6 @@
             console.log("default");
             break;
         }
-      });
-      // test purposes
-      socket.on("ping_client", function() {
-        socket.emit("pong_app");
       });
     </script>
   </body>
