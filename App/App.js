@@ -230,7 +230,15 @@ module.exports = class App {
     }
   }
 
+  /**
+   * @description This resets the system state by setting all the system variables to default and turning off any lighted LED
+   * @param {class instancde} self
+   * @param {the blink interval timer object} blinkTimer
+   * @param {timeout duration} timeout
+   */
   resetState(self, blinkTimer, timeout) {
+    self.occupiedState = false;
+
     var timeoutTimer = setTimeout(function() {
       if (blinkTimer) {
         clearInterval(blinkTimer);
@@ -238,7 +246,6 @@ module.exports = class App {
 
       b.digitalWrite(ledEnum.acknowledgment, 0);
       b.digitalWrite(ledEnum.signal, 0);
-      self.occupiedState = false;
     }, timeout);
 
     return timeoutTimer;
