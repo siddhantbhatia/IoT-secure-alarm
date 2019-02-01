@@ -92,18 +92,19 @@ class Test {
 	        originalLog(i);
 	        this.app.occupiedState = true;
 	        var blinkTimer = this.app.blinkLed(this.app, ledCode, i);
-	        this.app.resetState(this.app, blinkTimer);
-// 	        if (!blinkTimer) {
-// 	            this.app.intervalTimer(500);
-// 				b.digitalWrite(ledCode, 0);
-// 			    this.app.intervalTimer(500);
-// 			} else {
-// 			    setTimeout(function() {
-//                     clearInterval(blinkTimer);
-//                     b.digitalWrite(ledCode, 0);
-//                     originalLog(this.app.occupiedState);
-//                 }, 5000);
-// 			}
+	        // this.app.resetState(this.app, blinkTimer, 5000);
+	        if (!blinkTimer) {
+	            this.app.intervalTimer(500);
+				b.digitalWrite(ledCode, 0);
+			    this.app.intervalTimer(500);
+			} else {
+				this.app.resetState(this.app, blinkTimer, 5000);
+			    // setTimeout(function() {
+       //             clearInterval(blinkTimer);
+       //             b.digitalWrite(ledCode, 0);
+       //             originalLog(this.app.occupiedState);
+       //         }, 5000);
+			}
 	    }
 	}
 }
