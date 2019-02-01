@@ -75,6 +75,8 @@ module.exports = class App {
    */
   initClientMessageListener() {
     var self = this;
+    var blinkIntervalTimer;
+    var timeoutTimer;
 
     this.io.on("connection", function(socket) {
       console.log("a user connected");
@@ -83,11 +85,28 @@ module.exports = class App {
       });
 
       // rs -- response team
-      socket.on("rt-sound-alarm", function() {
-        console.log("alarm");
-        var blinkTimer = self.blinkLed(self, ledEnum.signal, blinkTypes.rapid);
+      socket.on("rt-sound-alarm", function(msg) {
+        console.log("sound-alarm");
+        blinkIntervalTimer = self.blinkLed(
+          self,
+          ledEnum.signal,
+          blinkTypes.rapid
+        );
         self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
-        self.resetState(self, blinkTimer, 5000);
+        timeoutTimer = self.resetState(self, blinkIntervalTimer, msg * 1000);
+      });
+
+      socket.on("rt-stop-alarm", function() {
+        console.log("stop-alarm");
+        console.log(timeoutTimer);
+        if (blinkIntervalTimer) {
+          clearInterval(blinkIntervalTimer);
+        }
+        if (timeoutTimer) {
+          clearTimeout(timeoutTimer);
+        }
+
+        self.resetState(self, false, 1);
       });
 
       socket.on("rt-lock-register", function() {
@@ -212,7 +231,7 @@ module.exports = class App {
   }
 
   resetState(self, blinkTimer, timeout) {
-    setTimeout(function() {
+    var timeoutTimer = setTimeout(function() {
       if (blinkTimer) {
         clearInterval(blinkTimer);
       }
@@ -221,6 +240,8 @@ module.exports = class App {
       b.digitalWrite(ledEnum.signal, 0);
       self.occupiedState = false;
     }, timeout);
+
+    return timeoutTimer;
   }
 
   /**
