@@ -1,6 +1,7 @@
 var assert = require("assert");
-var server = require("./Server/Server");
-var app = require("./App/App");
+var b = require("bonescript");
+var server = require("../Server/Server");
+var app = require("../App/App");
 
 /**
  * Replace the console.log function to save printed string into a var.
@@ -28,7 +29,7 @@ myApp = new app(io);
 /**
  * Class to test methods in App class.
  */
-module.exports = class Test {
+class Test {
 	constructor(app) {
 		this.app = app;
 	}
@@ -51,20 +52,23 @@ module.exports = class Test {
 		originalLog("Test: intervalComplete")
 		var setupSet = [[1, 10], [2, 10], [3, 10], [1, 11], [4, 9], [10, 9]];
 		for (var i = 0; i < setupSet.length; i++) {
-			this.setup(setupSet[i][0], setupSet[i][1]);
-			this.app.intervalComplete();
-			originalLog(checkLog);//
-			str1 = "clicked: " + setupSet[i][0];
-			if (i == 4) {
-				str1 = "invalid click: " + setupSet[i][0];
+			this.setupTest(setupSet[i][0], setupSet[i][1]);
+			this.app.intervalComplete(this.app);
+// 			originalLog(checkLog);//
+			var str1 = "entered callbackclicked: " + setupSet[i][0];
+			if (i == 3) {
+			    str1 = "entered callbackclicked: 10";
+			} else if (i == 4) {
+				str1 = "entered callbackinvalid click: " + setupSet[i][0];
 			} else if (i == 5) {
-				str1 = "invalid click: 99999999";
+				str1 = "entered callbackinvalid click: 99999999";
 			}
 			try {
 				assert.equal(checkLog, str1);
 				originalLog("PASSED.");
 			} catch (error) {
 				originalLog(error.message);
+				originalLog("FAILED.");
 			}
 		}
 	}
@@ -76,14 +80,34 @@ module.exports = class Test {
 	 */
 	test_blinkLed() {
 		originalLog("Test: blinkLed")
-		ledCode = ["P8_13", "USR1", "USR3"];
+		var ledCode = ["P8_13", "USR1", "USR3"];
 		for (var i = 0; i < ledCode.length; i++) {
-			for (var j = 1; j < 4; j++) {
-				this.app.blinkLed(this.app, ledCode[i], j);
-				this.app.intervalTimer(500);
-			}
-			this.app.intervalTimer(1000);
+			this.test_blinkLed_help(ledCode[i]);
 		}
 	}
 	
+	test_blinkLed_help(ledCode) {
+	    originalLog(ledCode);
+	    for (var i = 1; i < 4; i++) {
+	        originalLog(i);
+	        this.app.occupiedState = true;
+	        var blinkTimer = this.app.blinkLed(this.app, ledCode, i);
+	        this.app.resetState(this.app, blinkTimer);
+// 	        if (!blinkTimer) {
+// 	            this.app.intervalTimer(500);
+// 				b.digitalWrite(ledCode, 0);
+// 			    this.app.intervalTimer(500);
+// 			} else {
+// 			    setTimeout(function() {
+//                     clearInterval(blinkTimer);
+//                     b.digitalWrite(ledCode, 0);
+//                     originalLog(this.app.occupiedState);
+//                 }, 5000);
+// 			}
+	    }
+	}
 }
+
+var myTest = new Test(myApp);
+// myTest.test_intervalComplete();
+myTest.test_blinkLed();
