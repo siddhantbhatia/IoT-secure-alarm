@@ -36,8 +36,6 @@ module.exports = class App {
     this.io = io;
     this.counter = 0;
 
-    console.log("entered app");
-
     this.CommandManager = CommandManagerSingleton.getInstance();
 
     this.clickCounter = 0; // number of clicks
@@ -79,14 +77,14 @@ module.exports = class App {
     var timeoutTimer;
 
     this.io.on("connection", function(socket) {
-      console.log("a user connected");
       socket.on("disconnect", function() {
         console.log("user disconnected");
+        self.resetState(self, false, 500);
       });
 
       // rs -- response team
       socket.on("rt-sound-alarm", function(msg) {
-        console.log("sound-alarm");
+        console.log("sound-alarm " + msg);
         blinkIntervalTimer = self.blinkLed(
           self,
           ledEnum.signal,
@@ -98,7 +96,6 @@ module.exports = class App {
 
       socket.on("rt-stop-alarm", function() {
         console.log("stop-alarm");
-        console.log(timeoutTimer);
         if (blinkIntervalTimer) {
           clearInterval(blinkIntervalTimer);
         }
@@ -110,7 +107,7 @@ module.exports = class App {
       });
 
       socket.on("rt-lock-register", function() {
-        console.log("lock register");
+        console.log("lock-register");
         self.blinkLed(self, ledEnum.signal, blinkTypes.single);
         self.blinkLed(self, ledEnum.acknowledgment, blinkTypes.single);
         self.resetState(self, false, 5000);
@@ -147,7 +144,7 @@ module.exports = class App {
         if (self.firstClick == false) {
           setTimeout(function() {
             self.intervalComplete(self);
-          }, 5000); // Initiate the 5 second timer to detect the signal
+          }, 3000); // Initiate the 5 second timer to detect the signal
           self.firstClick = true;
         }
 
@@ -158,7 +155,6 @@ module.exports = class App {
         if (self.prevButtonState != 1) {
           self.clickCounter += 1;
           self.prevButtonState = 1;
-          console.log("clicked");
         }
       } else {
         self.blinkLed(self, ledEnum.state, blinkTypes.double);
@@ -173,18 +169,16 @@ module.exports = class App {
    * @param {reference to the calling class} self
    */
   intervalComplete(self) {
-    console.log("entered callback");
-    if (self.clickCounter == 1 && self.holdState > 10) {
+    if (self.clickCounter == 1 && self.holdState >= 10) {
       self.clickCounter = 10;
-    }
-
-    if (self.clickCounter == 10 && !(self.holdState >= 10)) {
+    } else if (self.clickCounter != 1 && self.holdState >= 10) {
       self.clickCounter = 99999999;
     }
 
     if (self.CommandManager.checkCommand(self.clickCounter)) {
       console.log("clicked: " + self.clickCounter);
       self.io.emit("gt-button-click", "" + self.clickCounter);
+      self.io.emit("rt-lock-register");
       self.occupiedState = true;
     } else {
       console.log("invalid click: " + self.clickCounter);
@@ -246,6 +240,7 @@ module.exports = class App {
 
       b.digitalWrite(ledEnum.acknowledgment, 0);
       b.digitalWrite(ledEnum.signal, 0);
+      b.digitalWrite(ledEnum.state, 0);
     }, timeout);
 
     return timeoutTimer;
