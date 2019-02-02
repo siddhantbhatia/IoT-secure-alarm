@@ -15,7 +15,6 @@ module.exports = class Server {
   createServer() {
     this.app = http.createServer(function(req, res) {
       //create http server
-      console.log(req.url);
       fs.readFile("index.html", function(err, data) {
         res.setHeader("Content-Type", "text/html");
         res.write(data);
@@ -31,10 +30,9 @@ module.exports = class Server {
    */
   listen() {
     if (this.app != null) {
-      console.log("not null");
       this.app.listen(8888, "0.0.0.0"); // webpage port 8888 --> http://beaglebone.local:8888/
     } else {
-      console.log("");
+      console.log("Create Server first!!");
     }
   }
 };

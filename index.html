@@ -67,27 +67,90 @@
         color: #29293d;
       }
 
-      .button2 {
+      .timeButton {
+        border-radius: 0px;
+        background-color: black;
+        border: white;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        outline: none;
+        transition-duration: 0.4s;
+      }
+
+      .timeButton:hover {
         background-color: #d1d1e0;
-      }
-
-      .button2:hover {
-        background-color: white;
-        color: #29293d;
-      }
-
-      .button3 {
-        background-color: #d1d1e0;
-      }
-
-      .button3:hover {
-        background-color: white;
-        color: #29293d;
+        color: black;
       }
 
       .flex {
         display: flex;
         justify-content: center;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      .modal-header {
+        color: #e0e0eb;
+        background-color: black;
+        padding: 20px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+
+      .modal-body {
+        color: #e0e0eb;
+        background-color: black;
+        padding-bottom: 25px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+
+      .modal-content {
+        position: relative;
+        background-color: black;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 60%;
+        animation-name: animatetop;
+        animation-duration: 0.3s;
+      }
+
+      @keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 10;
+        }
+        to {
+          top: 0;
+          opacity: 1;
+        }
+      }
+
+      .close {
+        color: #d1d1e0;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: white;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -95,23 +158,29 @@
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script>
     var socket = io();
-    function activateAlarm() {
-      socket.emit("rt-sound-alarm");
+    function activateAlarm(numberOfSeconds) {
+      console.log(numberOfSeconds);
+      socket.emit("rt-sound-alarm", numberOfSeconds);
       reset();
     }
     function lockRegisters() {
       socket.emit("rt-lock-register");
       reset();
     }
+    function stopAlarm() {
+      socket.emit("rt-stop-alarm");
+      reset();
+    }
     function decline() {
       socket.emit("rt-decline");
       reset();
     }
+
     function reset() {
       document.getElementById("robbery").style.color = "white";
       document.getElementById("fire").style.color = "white";
       document.getElementById("medical").style.color = "white";
-      document.getElementById("false").style.color = "white";
+      document.getElementById("stop-alarm").style.color = "white";
     }
   </script>
 
@@ -136,7 +205,7 @@
       </tr>
 
       <tr class="table_text">
-        <td id="false">False Alarm</td>
+        <td id="stop-alarm">Stop Alarm</td>
       </tr>
 
       <tr>
@@ -145,16 +214,51 @@
     </table>
 
     <div class="flex">
-      <button id="alarm" onclick="activateAlarm()" class="button button1">
-        Sound Alarms
+      <button id="alarm" class="button button1">
+        Sound Alarm
       </button>
-      <button id="lock" onclick="lockRegisters()" class="button button2">
-        Lock Registers
+      <button id="alarm2" onclick="stopAlarm()" class="button button1">
+        Stop Alarm
       </button>
-      <button id="decline" onclick="decline()" class="button button3">
+      <button id="lock" onclick="lockRegisters()" class="button button1">
+        Lock Register
+      </button>
+      <button id="decline" onclick="decline()" class="button button1">
         Decline
       </button>
     </div>
+
+    <div id="alarmDurationModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>How many seconds should the alarm sound?</h2>
+        </div>
+        <div class="modal-body">
+          <div class="flex">
+            <button id="alarm5" onclick="activateAlarm(5)" class="timeButton">
+              5
+            </button>
+            <button id="alarm10" onclick="activateAlarm(10)" class="timeButton">
+              10
+            </button>
+            <button id="alarm30" onclick="activateAlarm(30)" class="timeButton">
+              30
+            </button>
+            <button id="alarm60" onclick="activateAlarm(60)" class="timeButton">
+              60</button
+            ><button
+              id="alarm120"
+              onclick="activateAlarm(120)"
+              class="timeButton"
+            >
+              120
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       var socket = io();
       var emergencyTextBox = document.getElementById("emergency-msg-text");
@@ -175,17 +279,32 @@
             break;
           case "10":
             console.log("10-10");
-            document.getElementById("false").style.color = "red";
+            document.getElementById("stop-alarm").style.color = "red";
             break;
           default:
             console.log("default");
             break;
         }
       });
-      // test purposes
-      socket.on("ping_client", function() {
-        socket.emit("pong_app");
-      });
+
+      var modal = document.getElementById("alarmDurationModal");
+      var alarmButton = document.getElementById("alarm");
+
+      var span = document.getElementsByClassName("close")[0];
+
+      alarmButton.onclick = function() {
+        modal.style.display = "block";
+      };
+
+      modal.onclick = function() {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
     </script>
   </body>
 </html>
