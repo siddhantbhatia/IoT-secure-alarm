@@ -178,7 +178,6 @@ module.exports = class App {
     if (self.CommandManager.checkCommand(self.clickCounter)) {
       console.log("clicked: " + self.clickCounter);
       self.io.emit("gt-button-click", "" + self.clickCounter);
-      self.io.emit("rt-lock-register");
       self.occupiedState = true;
     } else {
       console.log("invalid click: " + self.clickCounter);
