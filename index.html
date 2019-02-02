@@ -160,6 +160,7 @@
     var socket = io();
     function activateAlarm(numberOfSeconds) {
       console.log(numberOfSeconds);
+      alarmSoundingLock = true;
       socket.emit("rt-sound-alarm", numberOfSeconds);
       reset();
     }
@@ -168,6 +169,7 @@
       reset();
     }
     function stopAlarm() {
+      alarmSoundingLock = false;
       socket.emit("rt-stop-alarm");
       reset();
     }
@@ -185,13 +187,14 @@
   </script>
 
   <body>
+    <!-- <audio
+      id="alertTone"
+      src="./assets/sounds/alert.wav"
+      autoplay="false"
+    ></audio> -->
     <div class="header"><h1>Emergency Response System</h1></div>
 
-    <table>
-      <tr class="table_heading" id="emergency-table">
-        <th>Emergency Type</th>
-      </tr>
-
+    <table id="emergency-table">
       <tr class="table_text">
         <td id="robbery">Robbery</td>
       </tr>
@@ -206,10 +209,6 @@
 
       <tr class="table_text">
         <td id="stop-alarm">Stop Alarm</td>
-      </tr>
-
-      <tr>
-        <th>Emergency Type</th>
       </tr>
     </table>
 
@@ -260,10 +259,17 @@
     </div>
 
     <script>
+      var alarmSoundingLock = false;
+
       var socket = io();
-      var emergencyTextBox = document.getElementById("emergency-msg-text");
+      // var alertTone = document.getElementById("alertTone");
+
+      socket.on("gt-alarm-ended", function() {
+        alarmSoundingLock = false;
+      });
+
       socket.on("gt-button-click", function(msg) {
-        console.log(msg);
+        // alertTone.play();
         switch (msg) {
           case "1":
             console.log("11");
@@ -293,7 +299,13 @@
       var span = document.getElementsByClassName("close")[0];
 
       alarmButton.onclick = function() {
-        modal.style.display = "block";
+        if (alarmSoundingLock) {
+          window.alert(
+            "Alarm already sounding!! Please wait for previous alarm to end"
+          );
+        } else {
+          modal.style.display = "block";
+        }
       };
 
       modal.onclick = function() {

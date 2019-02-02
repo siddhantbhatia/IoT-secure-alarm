@@ -16,7 +16,6 @@ module.exports = class Server {
     this.app = http.createServer(function(req, res) {
       //create http server
       fs.readFile("index.html", function(err, data) {
-        res.setHeader("Content-Type", "text/html");
         res.write(data);
         res.end();
       });

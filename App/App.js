@@ -235,6 +235,7 @@ module.exports = class App {
     var timeoutTimer = setTimeout(function() {
       if (blinkTimer) {
         clearInterval(blinkTimer);
+        self.io.emit("gt-alarm-ended");
       }
 
       b.digitalWrite(ledEnum.acknowledgment, 0);
