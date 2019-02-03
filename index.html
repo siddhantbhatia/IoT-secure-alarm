@@ -158,6 +158,10 @@
       document.getElementById("fire").style.color = "white";
       document.getElementById("medical").style.color = "white";
       document.getElementById("stop-alarm").style.color = "white";
+      document.getElementById("robbery-icon").style.color = "white";
+      document.getElementById("fire-icon").style.color = "white";
+      document.getElementById("medical-icon").style.color = "white";
+      document.getElementById("stop-alarm-icon").style.color = "white";
     }
   </script>
 
@@ -225,7 +229,11 @@
         <div class="w3-card w3-container w3-black" style="min-height:460px">
           <h3 style="color:#d1d1e0" id="robbery">Robbery</h3>
           <br />
-          <i class="fa fa-money" style="font-size:100px;color:#d1d1e0;"></i>
+          <i
+            class="fa fa-money"
+            id="robbery-icon"
+            style="font-size:100px;color:#d1d1e0;"
+          ></i>
           <p style="color:#d1d1e0">There is an active robbery on the site</p>
         </div>
       </div>
@@ -236,6 +244,7 @@
           <br />
           <i
             class="fa fa-stethoscope"
+            id="medical-icon"
             style="font-size:100px;color:#d1d1e0;"
           ></i>
           <p style="color:#d1d1e0">There is a medical emergency on the site</p>
@@ -246,7 +255,11 @@
         <div class="w3-card w3-container w3-black" style="min-height:460px">
           <h3 style="color:#d1d1e0" id="fire">Fire</h3>
           <br />
-          <i class="fa fa-fire" style="font-size:100px;color:#d1d1e0;"></i>
+          <i
+            class="fa fa-fire"
+            id="fire-icon"
+            style="font-size:100px;color:#d1d1e0;"
+          ></i>
           <p style="color:#d1d1e0">A fire has broken out on the site</p>
         </div>
       </div>
@@ -257,6 +270,7 @@
           <br />
           <i
             class="fa fa-bell-slash"
+            id="stop-alarm-icon"
             style="font-size:100px;color:#d1d1e0;"
           ></i>
           <p style="color:#d1d1e0">You can now stop the alarm from sounding</p>
@@ -277,17 +291,21 @@
         switch (msg) {
           case "1":
             document.getElementById("robbery").style.color = "red";
+            document.getElementById("robbery-icon").style.color = "red";
 
             // alertTone.play();
             break;
           case "2":
             document.getElementById("fire").style.color = "red";
+            document.getElementById("fire-icon").style.color = "red";
             break;
           case "3":
             document.getElementById("medical").style.color = "red";
+            document.getElementById("medical-icon").style.color = "red";
             break;
           case "10":
             document.getElementById("stop-alarm").style.color = "red";
+            document.getElementById("stop-alarm-icon").style.color = "red";
             break;
           default:
             console.log("default");
