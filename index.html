@@ -141,6 +141,11 @@
       reset();
     }
     function lockRegisters() {
+      if (alarmSoundingLock) {
+        window.alert(
+          "The register is locked but would not be visible on LED as it is blinking for alarm and due to budget constraints we didn't install another LED"
+        );
+      }
       socket.emit("rt-lock-register");
       reset();
     }
