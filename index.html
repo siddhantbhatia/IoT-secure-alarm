@@ -1,294 +1,322 @@
 <!DOCTYPE html>
 <html>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
-    
-    <head>
-        <title>FIT3140 PANIC</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+  <link
+    rel="stylesheet"
+    href="https://www.w3schools.com/lib/w3-theme-black.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"
+  />
 
-        <style>
-            body {
-                background-color:black;
-            }
-            .button {
-                border-radius: 5px;
-                padding: 10px 80px;
-                text-align: center;
-                color: black;
-                font-size: 18px;
-                margin: 4px 2px;
-                transition-duration: 0.4s;
-                cursor: pointer;  
-                outline: none;
-                box-shadow: 0 3px #999;
-            }
+  <head>
+    <title>FIT3140 PANIC</title>
 
-            .button:active {
-                transform: translateY(4px);
-            }
+    <style>
+      body {
+        background-color: black;
+      }
+      .button {
+        border-radius: 5px;
+        padding: 10px 80px;
+        text-align: center;
+        color: black;
+        font-size: 18px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 3px #999;
+      }
 
-            .button1 {
-                background-color:#d1d1e0; 
-            }
+      .button:active {
+        transform: translateY(4px);
+      }
 
-            .button1:hover {
-                background-color: white;
-                color: #29293d;
-            }
-            
-            .timeButton {
-                border-radius: 0px;
-                background-color: transparent;
-                border: white;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                display: inline-block;
-                font-size: 16px;
-                cursor: pointer;
-                outline: none;
-                transition-duration: 0.4s;
-            }
+      .button1 {
+        background-color: #d1d1e0;
+      }
 
-            .timeButton:hover {
-                background-color: #d1d1e0;
-                color: black;
-            }
-            
-            .timeButton:active {
-                transform: translateY(4px);
-            }
-            
-            .modal {
-                display: none; 
-                position: fixed; 
-                padding-top: 100px; 
-                left: 0;
-                top: 0;
-                width: 100%; 
-                height: 100%; 
-                background-color: rgba(0,0,0,0.6); 
-            }
-            
-            .modal-header {
-                color: #e0e0eb;
-                background-color: black;
-                padding: 20px;
-                text-align: center;
-                font-family: "Trebuchet MS";
-            }
-            
-            .modal-body {
-                color: #e0e0eb;
-                background-color: black;
-                padding-bottom: 25px;
-                text-align: center;
-                font-family: "Trebuchet MS";
-            }
-            
-            .modal-content {
-                position: relative;
-                background-color:black;
-                margin: auto;
-                padding: 0;
-                border: 1px solid #888;
-                width: 60%;
-                animation-name: animatetop;
-                animation-duration: 0.3s;
-            }
-            
-            @keyframes animatetop {
-                from {top: -300px; opacity: 10}
-                to {top: 0; opacity: 1}
-            }
-                    
-            .close {
-                color: #d1d1e0;
-                float: right;
-                font-size: 28px;
-                font-weight: bold;
-            }
-            
-            .close:hover,
-            .close:focus {
-                color: white;
-                cursor: pointer;
-            }
-            
-        </style>
-    </head>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-        var socket = io();
-        function activateAlarm(numberOfSeconds) {
-        console.log(numberOfSeconds);
-        alarmSoundingLock = true;
-        socket.emit("rt-sound-alarm", numberOfSeconds);
-        reset();
+      .button1:hover {
+        background-color: white;
+        color: #29293d;
+      }
+
+      .timeButton {
+        border-radius: 0px;
+        background-color: transparent;
+        border: white;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        outline: none;
+        transition-duration: 0.4s;
+      }
+
+      .timeButton:hover {
+        background-color: #d1d1e0;
+        color: black;
+      }
+
+      .timeButton:active {
+        transform: translateY(4px);
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      .modal-header {
+        color: #e0e0eb;
+        background-color: black;
+        padding: 20px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+
+      .modal-body {
+        color: #e0e0eb;
+        background-color: black;
+        padding-bottom: 25px;
+        text-align: center;
+        font-family: "Trebuchet MS";
+      }
+
+      .modal-content {
+        position: relative;
+        background-color: black;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 60%;
+        animation-name: animatetop;
+        animation-duration: 0.3s;
+      }
+
+      @keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 10;
         }
-        function lockRegisters() {
-        socket.emit("rt-lock-register");
-        reset();
+        to {
+          top: 0;
+          opacity: 1;
         }
-        function stopAlarm() {
-        alarmSoundingLock = false;
-        socket.emit("rt-stop-alarm");
-        reset();
-        }
-        function decline() {
-        socket.emit("rt-decline");
-        reset();
-        }
-        function reset() {
-        document.getElementById("robbery").style.color = "white";
-        document.getElementById("fire").style.color = "white";
-        document.getElementById("medical").style.color = "white";
-        document.getElementById("stop-alarm").style.color = "white";
-        }
-    </script>
+      }
 
+      .close {
+        color: #d1d1e0;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
 
-    <body>
-        <header class="w3-container w3-theme w3-padding" id="myHeader">
-            <div class="w3-center">
-                <h2 class="w3-xxlarge w3-animate-bottom" style="color:#d1d1e0">Emergency Response System</h2>
-                    <div class="w3-padding-32">         
-                        <button id="alarm" class="button button1">
-                            Sound Alarm
-                        </button>
-                        <button id="alarm2" onclick="stopAlarm()" class="button button1">
-                            Stop Alarm
-                        </button>
-                        <button id="lock" onclick="lockRegisters()" class="button button1">
-                            Lock Register
-                        </button>
-                        <button id="decline" onclick="decline()" class="button button1">
-                            Decline
-                        </button>
-                    </div>
-             </div>
-         </header>
+      .close:hover,
+      .close:focus {
+        color: white;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    var socket = io();
+    function activateAlarm(numberOfSeconds) {
+      alarmSoundingLock = true;
+      socket.emit("rt-sound-alarm", numberOfSeconds);
+      reset();
+    }
+    function lockRegisters() {
+      socket.emit("rt-lock-register");
+      reset();
+    }
+    function stopAlarm() {
+      alarmSoundingLock = false;
+      socket.emit("rt-stop-alarm");
+      reset();
+    }
+    function decline() {
+      socket.emit("rt-decline");
+      reset();
+    }
+    function reset() {
+      document.getElementById("robbery").style.color = "white";
+      document.getElementById("fire").style.color = "white";
+      document.getElementById("medical").style.color = "white";
+      document.getElementById("stop-alarm").style.color = "white";
+    }
+  </script>
+
+  <body>
+    <!--    <audio id="emergencyAlert">-->
+    <!--  <source src="./assets/sounds/alert.ogg" type="audio/ogg">-->
+    <!--  Your browser does not support the audio element.-->
+    <!--</audio>-->
+    <header class="w3-container w3-theme w3-padding" id="myHeader">
+      <div class="w3-center">
+        <h2 class="w3-xxlarge w3-animate-bottom" style="color:#d1d1e0">
+          Emergency Response System
+        </h2>
+        <div class="w3-padding-32">
+          <button id="alarm" class="button button1">
+            Sound Alarm
+          </button>
+          <button id="alarm2" onclick="stopAlarm()" class="button button1">
+            Stop Alarm
+          </button>
+          <button id="lock" onclick="lockRegisters()" class="button button1">
+            Lock Register
+          </button>
+          <button id="decline" onclick="decline()" class="button button1">
+            Decline
+          </button>
+        </div>
+      </div>
+    </header>
 
     <div id="alarmDurationModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>How many seconds should the alarm sound?</h2>
-            </div>
-            <div class="modal-body">
-                <div class="flex">
-                    <button id="alarm5" onclick="activateAlarm(5)" class="timeButton">
-                        5
-                    </button>
-                    <button id="alarm10" onclick="activateAlarm(10)" class="timeButton">
-                        10
-                    </button>
-                    <button id="alarm30" onclick="activateAlarm(30)" class="timeButton">
-                        30
-                    </button>
-                    <button id="alarm60" onclick="activateAlarm(60)" class="timeButton">
-                        60
-                    </button>
-                    <button id="alarm120" onclick="activateAlarm(120)" class="timeButton">
-                        120
-                    </button>
-                </div>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>How many seconds should the alarm sound?</h2>
         </div>
+        <div class="modal-body">
+          <div class="flex">
+            <button id="alarm5" onclick="activateAlarm(5)" class="timeButton">
+              5
+            </button>
+            <button id="alarm10" onclick="activateAlarm(10)" class="timeButton">
+              10
+            </button>
+            <button id="alarm30" onclick="activateAlarm(30)" class="timeButton">
+              30
+            </button>
+            <button id="alarm60" onclick="activateAlarm(60)" class="timeButton">
+              60
+            </button>
+            <button
+              id="alarm120"
+              onclick="activateAlarm(120)"
+              class="timeButton"
+            >
+              120
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="w3-row-padding w3-center w3-margin-top">
-            <div class="w3-quarter" id="robbery">
-              <div class="w3-card w3-container w3-black" style="min-height:460px">
-              <h3 style="color:#d1d1e0">Robbery</h3><br>
-              <i class="fa fa-money" style="font-size:100px;color:#d1d1e0;"></i>
-              <p style="color:#d1d1e0">There is an active robbery on the site</p>
-              </div>
-            </div>
-            
-            <div class="w3-quarter" id="medical">
-              <div class="w3-card w3-container w3-black" style="min-height:460px">
-              <h3 style="color:#d1d1e0">Medical</h3><br>
-              <i class="fa fa-stethoscope" style="font-size:100px;color:#d1d1e0;"></i>
-              <p style="color:#d1d1e0">There is a medical emergency on the site</p>
-              </div>
-            </div>
-            
-            <div class="w3-quarter" id="fire">
-              <div class="w3-card w3-container w3-black" style="min-height:460px">
-              <h3 style="color:#d1d1e0">Fire</h3><br>
-              <i class="fa fa-fire" style="font-size:100px;color:#d1d1e0;"></i>
-              <p style="color:#d1d1e0">A fire has broken out on the site</p>
-              </div>
-            </div>
-            
-            <div class="w3-quarter" id="stop-alarm">
-              <div class="w3-card w3-container w3-black" style="min-height:460px">
-              <h3 style="color:#d1d1e0">Stop Alarm</h3><br>
-              <i class="fa fa-bell-slash" style="font-size:100px;color:#d1d1e0;"></i>
-              <p style="color:#d1d1e0">You can now stop the alarm from sounding</p>
-              </div>
-            </div>
-            </div>
+      <div class="w3-quarter">
+        <div class="w3-card w3-container w3-black" style="min-height:460px">
+          <h3 style="color:#d1d1e0" id="robbery">Robbery</h3>
+          <br />
+          <i class="fa fa-money" style="font-size:100px;color:#d1d1e0;"></i>
+          <p style="color:#d1d1e0">There is an active robbery on the site</p>
+        </div>
+      </div>
+
+      <div class="w3-quarter">
+        <div class="w3-card w3-container w3-black" style="min-height:460px">
+          <h3 style="color:#d1d1e0" id="medical">Medical</h3>
+          <br />
+          <i
+            class="fa fa-stethoscope"
+            style="font-size:100px;color:#d1d1e0;"
+          ></i>
+          <p style="color:#d1d1e0">There is a medical emergency on the site</p>
+        </div>
+      </div>
+
+      <div class="w3-quarter">
+        <div class="w3-card w3-container w3-black" style="min-height:460px">
+          <h3 style="color:#d1d1e0" id="fire">Fire</h3>
+          <br />
+          <i class="fa fa-fire" style="font-size:100px;color:#d1d1e0;"></i>
+          <p style="color:#d1d1e0">A fire has broken out on the site</p>
+        </div>
+      </div>
+
+      <div class="w3-quarter">
+        <div class="w3-card w3-container w3-black" style="min-height:460px">
+          <h3 style="color:#d1d1e0" id="stop-alarm">Stop Alarm</h3>
+          <br />
+          <i
+            class="fa fa-bell-slash"
+            style="font-size:100px;color:#d1d1e0;"
+          ></i>
+          <p style="color:#d1d1e0">You can now stop the alarm from sounding</p>
+        </div>
+      </div>
+    </div>
 
     <script>
-            var alarmSoundingLock = false;
-            var socket = io();
-            // var alertTone = document.getElementById("alertTone");
-            socket.on("gt-alarm-ended", function() {
-                alarmSoundingLock = false;
-            });
-            socket.on("gt-button-click", function(msg) {
-                // alertTone.play();
-                switch (msg) {
-                case "1":
-                    console.log("11");
-                    document.getElementById("robbery").style.color = "red";
-                    break;
-                case "2":
-                    console.log("22");
-                    document.getElementById("fire").style.color = "red";
-                    break;
-                case "3":
-                    console.log("33");
-                    document.getElementById("medical").style.color = "red";
-                    break;
-                case "10":
-                    console.log("10-10");
-                    document.getElementById("stop-alarm").style.color = "red";
-                    break;
-                default:
-                    console.log("default");
-                    break;
-                }
-            });
-            </script>
+      var alarmSoundingLock = false;
+      var socket = io();
 
-            <script>
-            var modal = document.getElementById("alarmDurationModal");
-            var alarmButton = document.getElementById("alarm");
-            var span = document.getElementsByClassName("close")[0];
-            alarmButton.onclick = function() {
-                if (alarmSoundingLock) {
-                window.alert(
-                    "Alarm is already sounding! Please wait for previous alarm to end"
-                );
-                } else {
-                modal.style.display = "block";
-                }
-            };
-            modal.onclick = function() {
-                modal.style.display = "none";
-            };
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                modal.style.display = "none";
-                }
-            };
-            </script>
-        </body>
-        </html>
+      // var alertTone = document.getElementById("emergencyAlert");
+
+      socket.on("gt-alarm-ended", function() {
+        alarmSoundingLock = false;
+      });
+      socket.on("gt-button-click", function(msg) {
+        switch (msg) {
+          case "1":
+            document.getElementById("robbery").style.color = "red";
+
+            // alertTone.play();
+            break;
+          case "2":
+            document.getElementById("fire").style.color = "red";
+            break;
+          case "3":
+            document.getElementById("medical").style.color = "red";
+            break;
+          case "10":
+            document.getElementById("stop-alarm").style.color = "red";
+            break;
+          default:
+            console.log("default");
+            break;
+        }
+      });
+    </script>
+
+    <script>
+      var modal = document.getElementById("alarmDurationModal");
+      var alarmButton = document.getElementById("alarm");
+      var span = document.getElementsByClassName("close")[0];
+      alarmButton.onclick = function() {
+        if (alarmSoundingLock) {
+          window.alert(
+            "Alarm is already sounding! Please wait for previous alarm to end"
+          );
+        } else {
+          modal.style.display = "block";
+        }
+      };
+      modal.onclick = function() {
+        modal.style.display = "none";
+      };
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>
